@@ -3,7 +3,7 @@ use actix_web::{get, App, HttpServer, HttpResponse};
 #[get("/croissant_demo")]
 async fn croissant_demo() -> HttpResponse {
     HttpResponse::Ok()
-        .content_type("text/html") // Set the content type to HTML
+        .content_type("text/html")
         .body(include_str!("../static/index.html"))
 }
 
