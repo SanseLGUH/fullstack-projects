@@ -1,13 +1,15 @@
-use std::net::{TcpListener, TcpStream};
-use std::io::Write;
-use std::thread;
-use std::time::Duration;
+use std::{thread, time::Duration, io::Write, net::{TcpListener, TcpStream}};
+
+struct Position {
+
+}
 
 fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
+    
+    
+
     loop {
-        // Send a simple message every second
-        let message = b"Hello from server!\n";
-        stream.write_all(message)?;
+        
         thread::sleep(Duration::from_secs(1));
     }
 }

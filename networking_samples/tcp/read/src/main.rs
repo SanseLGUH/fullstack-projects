@@ -1,22 +1,20 @@
 use std::net::TcpStream;
-use std::io::{self, Read};
+use std::io::{self, Read, Write};
 
 fn main() -> io::Result<()> {
     // Connect to the server
     let mut stream = TcpStream::connect("127.0.0.1:4462")?;
 
     loop {
+        let mut buffer = [0; 4];
 
-        // Buffer to hold the data
-        let mut buffer = [0; 1]; // adjust size as needed
-
-        // Read data from the stream
         let bytes_read = stream.read(&mut buffer)?;
 
-        // Convert buffer to string and print
-        let response = String::from_utf8_lossy(&buffer[..bytes_read]);
+        stream.write(b"fds");
+
+        // let response = u32::from_be_bytes(buffer);
         
-        println!("Received: {}", response);
+        println!("Received: {:?}", bytes_read);
     }
     Ok(())
 }
