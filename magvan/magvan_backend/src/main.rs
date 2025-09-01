@@ -1,14 +1,14 @@
 mod file_management;
 mod integration_tests;
-mod manifests;
+mod metadatas;
 mod websocket;
 
 use actix_web::{
-    App, HttpServer, HttpResponse, Responder
+    web, App, HttpServer, HttpResponse, Responder
 };
 
 #[actix_web::get("/websites/{website_name}")]
-async fn websites(path: actix_web::web::Path<String>) -> impl Responder  {
+async fn websites(path: web::Path<String>) -> impl Responder  {
     
 
     HttpResponse::Ok()
@@ -20,10 +20,11 @@ async fn websites(path: actix_web::web::Path<String>) -> impl Responder  {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .service(manifests::endpoints)
-            .service(manifests::public_access)
-            .service(file_management::download_files)
-            .service(file_management::upload_file)
+            .service(metadatas::manifest)
+            .service(metadatas::public_access)
+            .service(metadatas::upload)
+            .service(file_management::download)
+            .service(file_management::upload)
             .route("/ws", web::get().to(websocket::with_any::index))
     })
     .bind("127.0.0.1:4462")?

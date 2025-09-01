@@ -1,8 +1,7 @@
 use actix::{Actor, StreamHandler};
-use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
 
-/// Define HTTP actor
 struct WithAny;
 
 impl Actor for WithAny {

@@ -3,12 +3,11 @@ use actix_web::{
     http::header::{ContentDisposition, DispositionParam, DispositionType},
     web, get, post, HttpResponse, Responder, Result,
 };
-use std::path::PathBuf;
 use serde::Deserialize;
 use actix_multipart::form::{text::Text, tempfile::TempFile, MultipartForm};
 
 #[get("/{folder}/{file}")]
-pub async fn download_files(path: web::Path<(String, String)>) -> Result<NamedFile> {
+pub async fn download(path: web::Path<(String, String)>) -> Result<NamedFile> {
     let (folder, file) = path.into_inner();
     let file_path = format!("./global_files/{}/{}", folder, file);
     
@@ -33,8 +32,8 @@ struct UploadMeta {
     key: String,
 }
 
-#[post("/upload")]
-pub async fn upload_file(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responder {
+#[post("/upload/file")]
+pub async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responder {
     match serde_json::from_str::<UploadMeta>(&form.json) {
         Ok(meta) if meta.key == "AbsoluteSecretKeyMyMan" => {
             let name = form.file.file_name.unwrap_or("unnamed_file".into());
