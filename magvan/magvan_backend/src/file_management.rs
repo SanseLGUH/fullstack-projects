@@ -1,25 +1,52 @@
 use actix_files::NamedFile;
 use actix_web::{
-    http::header::{DispositionParam, ContentDisposition, DispositionType}, 
-    Responder, web, get, post, Result
+    http::header::{ContentDisposition, DispositionParam, DispositionType},
+    web, get, post, HttpResponse, Responder, Result,
 };
 use std::path::PathBuf;
+use serde::Deserialize;
+use actix_multipart::form::{text::Text, tempfile::TempFile, MultipartForm};
 
-#[get("/{foldername}/{filename}")]
+#[get("/{folder}/{file}")]
 pub async fn download_files(path: web::Path<(String, String)>) -> Result<NamedFile> {
-    let (foldername, filename) = path.into_inner();
-
-    let filepath: PathBuf = format!("./global_files/{}/{}", foldername, filename).into();
-
-    let file = NamedFile::open(filepath)?;
+    let (folder, file) = path.into_inner();
+    let file_path = format!("./global_files/{}/{}", folder, file);
     
-    Ok(file.set_content_disposition(ContentDisposition {
-        disposition: DispositionType::Attachment,
-        parameters: vec![DispositionParam::Filename(filename.into())],
-    }))
+    Ok(NamedFile::open(file_path)?
+        .set_content_disposition(ContentDisposition {
+            disposition: DispositionType::Attachment,
+            parameters: vec![DispositionParam::Filename(file.into())],
+        }))
 }
 
-#[post("/{foldername}/{filename}")]
-pub async fn upload_file(path: web::Path<(String, String)>) -> Result<impl Responder> {
-    Ok(format!("test"))
+#[derive(Debug, MultipartForm)]
+struct UploadForm {
+    #[multipart(limit = "200MB")]
+    file: TempFile,
+    #[multipart]
+    json: Text<String>,
+}
+
+#[derive(Deserialize)]
+struct UploadMeta {
+    name: String,
+    key: String,
+}
+
+#[post("/upload")]
+pub async fn upload_file(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responder {
+    match serde_json::from_str::<UploadMeta>(&form.json) {
+        Ok(meta) if meta.key == "AbsoluteSecretKeyMyMan" => {
+            let name = form.file.file_name.unwrap_or("unnamed_file".into());
+            let path = format!("./global_files/uploaded_files/{}", name);
+
+            match form.file.file.persist(&path) {
+                Ok(_) => HttpResponse::Ok().body(format!("File uploaded successfully to {}", path)),
+                Err(e) => HttpResponse::InternalServerError()
+                    .body(format!("Failed to save file: {}", e)),
+            }
+        }
+        Ok(_) => HttpResponse::Unauthorized().body("Invalid key"),
+        Err(_) => HttpResponse::BadRequest().body("Invalid JSON"),
+    }
 }
