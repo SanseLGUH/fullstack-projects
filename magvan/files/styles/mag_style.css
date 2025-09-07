@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Coiny&family=Funnel+Display:wght@300..800&display=swap');
+
+img {
+    margin-top: 5px;
+    width: 48px;
+    height: 48px;
+}
+
+.title {
+    font-size: 48px;
+}
+
+.header {
+    padding-top: 15px;
+    padding-bottom: 25px;
+    top: 0;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    position: fixed;
+    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 100;
+    background-color: rgba(30, 30, 30, 0.896);
+    border-radius: 0 0 15px 15px;
+
+}   
+
+.block{
+    font-size: 18px;
+    background-color: rgb(74, 74, 74);
+    max-width: 350px;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    transition: all 0.3s ease;
+}.block:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+h2 {
+    text-align: center;
+}
+
+.list_obj, .list_obj_link, .bio_text {
+    padding-left: 15px;
+}
+
+a {
+    color: rgb(176, 255, 255);
+    text-decoration: none;
+    font-style: italic;
+    transition: all 0.3s ease;
+}a:hover {
+    transition: all 0.3s ease;
+    color: rgb(200, 255, 255);
+    font-size: 22px;
+}
+
+body {
+    background: radial-gradient(circle, transparent, black) fixed;
+    display: flex;
+    padding-top: 64px;
+    justify-content: center;
+    font-family: "Funnel Display";
+    background-color: rgb(52, 52, 52);
+    color: azure;
+
+}

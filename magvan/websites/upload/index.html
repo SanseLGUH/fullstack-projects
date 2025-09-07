@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload File with JSON Metadata</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center" style="background-color: #282828;">
+  <div class="rounded-lg p-6 w-full max-w-md space-y-4 border" style="background-color: #3c3c3c; border-color: #444;">
+    <h1 class="text-lg font-semibold text-white">Upload File with JSON Metadata</h1>
+
+    <div class="space-y-3">
+      <input
+        type="file"
+        id="fileInput"
+        class="block w-full text-sm text-white
+               file:mr-4 file:py-2 file:px-4
+               file:rounded-md file:border-0
+               file:text-sm file:font-medium
+               file:bg-gray-700 file:text-white
+               hover:file:bg-gray-600"
+      />
+
+      <div>
+        <label for="keyInput" class="block text-sm font-medium text-gray-300">Key:</label>
+        <input
+          type="text"
+          id="keyInput"
+          class="mt-1 block w-full rounded-md border border-gray-600 bg-[#282828] text-white text-sm px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+        />
+      </div>
+
+      <button
+        onclick="uploadFile()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition-colors"
+      >
+        Upload
+      </button>
+    </div>
+
+    <pre id="response" class="bg-[#282828] text-sm text-gray-200 p-3 rounded-md border border-gray-700 overflow-x-auto whitespace-pre-wrap"></pre>
+  </div>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const keyInput = document.getElementById('keyInput');
+      const responseBox = document.getElementById('response');
+
+      if (!fileInput.files.length) {
+        alert('Please select a file.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const key = keyInput.value;
+
+      const json = JSON.stringify({ key });
+
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+      formData.append('json', json);
+
+      try {
+        const response = await fetch('http://magvik.space:4462/upload-file', {
+          method: 'POST',
+          body: formData
+        });
+
+        const text = await response.text();
+        responseBox.textContent = `Response: ${response.status} ${response.statusText}\n\n${text}`;
+      } catch (error) {
+        responseBox.textContent = `Error: ${error}`;
+      }
+    }
+  </script>
+</body>
+</html>
