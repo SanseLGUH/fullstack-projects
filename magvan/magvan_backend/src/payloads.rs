@@ -5,13 +5,43 @@ use serde::Deserialize;
 use serde_json::Value;
 
 #[derive(Deserialize, Debug)]
-pub struct UploadMeta {
-    pub name: String, pub file: Value,
-    pub admin_key: String
+pub struct TimerRequest {
+    pub auth_token: String,
+    pub content: String,
+    pub scheduled_time: String,
+    pub recipients: Vec<String>,
+    pub password: String
 }
 
+#[derive(Deserialize)]
+pub struct PasswordAuth {
+    pub password: String,
+}
+
+#[derive(serde::Serialize)]
+pub struct Message {
+    content: String
+}
+
+impl Message {
+    pub fn new(content: &str) -> Self {
+        Self {
+            content: content.to_string()
+        }
+    }
+}
+
+// Used in the /upload_meta endpoint
+#[derive(Deserialize, Debug)]
+pub struct UploadMetadataRequest {
+    pub name: String, 
+    pub file: Value,
+    pub key: String,
+}
+
+// Used in the /upload_file endpoint
 #[derive(Debug, MultipartForm)]
-pub struct UploadForm {
+pub struct FileUploadForm {
     #[multipart(limit = "600MB")]
     pub file: TempFile,
     #[multipart]
@@ -19,12 +49,13 @@ pub struct UploadForm {
 }
 
 #[derive(Deserialize)]
-pub struct UploadFormMeta {
+pub struct AdminRequest {
     pub key: String
 }
 
+// Used to extract optional website path information
 #[derive(Deserialize)]
-pub struct WebsitePath {
+pub struct WebsitePathParams {
     pub website_name: Option<String>,
     pub page: Option<String>,
 }
