@@ -1,0 +1,25 @@
+[package]
+name = "magvan_backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix = "0.13.5"
+actix-files = "0.6.7"
+actix-multipart = "0.7.2"
+actix-web = "4.11.0"
+actix-web-actors = "4.3.1"
+
+
+reqwest = { version = "0.12.23", features = ["json"] }
+serde = { version = "1.0.219", features = ["derive"] }
+
+serde_json = "1.0.143"
+sqlx = { version = "0.8.6", features = ["postgres"] }
+
+thiserror = "2.0.16"
+tokio = { version = "1.47.1", features = ["full"] }
+
+uuid = { version = "1.18.0", features = ["v4"] }
+chrono = "0.4.42"
+redis = { version = "0.32.5", features = ["aio", "cluster", "cluster-async", "tokio-comp"] }
